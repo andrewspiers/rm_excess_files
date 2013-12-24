@@ -19,17 +19,43 @@ import glob
 import os
 
 
-def main(args):
-    """given an argparse.Namespace (compulsory), process the arguments  within.
+class RemovalCandidate(object):
+    """each removal candidate has three attributes: a path (an absolute
+    filename), and two properties from os.stat of that filename, mtime and
+    size.
     """
-    matches = glob.glob(args.glob)
-    print (matches)
 
-def  matchedfiles(g):
+    def __init__(self, path):
+        self.path = path
+        self.stat = os.stat(self.path)
+        self.mtime = self.stat.st_mtime
+        self.size = self.stat.st_size
+
+
+def candidates(list_paths):
+    """given a list of file paths, return a list of RemovalCandidate(s).
+    The list should be sorted with from youngest (at [0], to oldest.
+    """
+    out = [RemovalCandidate(i) for i in list_paths]
+    out.sort(key=lambda x: x.mtime)
+    return out
+
+
+def matchedfiles(g):
     """given a glob (g), return the matched files."""
     return glob.glob(g)
 
-if  __name__ == "__main__":
+
+def main(args):
+    """given an argparse.Namespace (compulsory), process the arguments  within.
+    """
+    matches = matchedfiles(args.glob)
+    if len(matches) < 1:
+        sys.stderr.write('No matches found.')
+        sys.exit(1)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser = argparse.ArgumentParser()
     parser.add_argument("--glob",
@@ -39,11 +65,10 @@ if  __name__ == "__main__":
             "\n Defaults to current working directory +"
             " 'backup*.tar.gz.gpg'. Take care to protect wildcards from shell"
             " expansion.",
-            default=os.path.join(os.getcwd(),"backup*.tar.gz.gpg")
+            default=os.path.join(os.getcwd(), "backup*.tar.gz.gpg")
                         )
     parser.add_argument("--preserve", default=1, type=int,
             help="The number of files to preserve.")
-    parser.add_argument("--dryrun",action='store_true')
-    args  = parser.parse_args()
+    parser.add_argument("--dryrun", action='store_true')
+    args = parser.parse_args()
     main(args)
-

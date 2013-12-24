@@ -1,11 +1,35 @@
 from nose.tools import *
 import argparse
 import os
+import shutil
 import tempfile
+import time
 
 import rm_excess_files as r
 
 dir(r)
+
+def test_candidates_3files():
+    """create 3 files, create a candidates() list out of them, and check that
+    the list is comprised of the right number and type of files, and that they
+    are ordered from youngest to oldest."""
+    #files = [tempfile.mkstemp() for i in range(3)]
+    files = []
+    for i in range(3):
+        files.append(tempfile.mkstemp())
+        time.sleep(0.1)  #sleep is essential to ensure mtimes are different.
+    paths = [i[1] for i in files]
+    candidates = r.candidates(paths)
+    assert_is_instance(candidates, list)
+    assert_equal(len(candidates),3)
+    young = 0.00 #mtime of 0 : created at unix epoch
+    assert_greater_equal
+    for i in candidates:
+        assert_is_instance(i,r.RemovalCandidate)
+        assert_greater_equal(i.mtime,young)
+        young = i.mtime
+    map(os.remove,paths) ##remove the test files
+
 
 def test_glob_matching():
     d = tempfile.mkdtemp()
@@ -16,8 +40,15 @@ def test_glob_matching():
     with open(testfile,"w") as f:
         f.write("some content\n")
     assert_equal(r.matchedfiles(testglob)[0],testfile)
+    shutil.rmtree(d)
 
 
-
-
-
+def test_RemovalCandidate_instantiation():
+    """just test the creation of a RemovalCandidate ojbect"""
+    f = tempfile.mkstemp()
+    #f[1] is the absolute pathname.
+    rc = r.RemovalCandidate(f[1])
+    assert_equal(rc.path,f[1])
+    assert_is_instance(rc.mtime,float)
+    assert_equal(rc.size,0)
+    os.remove(f[1])
