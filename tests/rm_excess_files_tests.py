@@ -52,3 +52,12 @@ def test_RemovalCandidate_instantiation():
     assert_is_instance(rc.mtime,float)
     assert_equal(rc.size,0)
     os.remove(f[1])
+
+def test_commonfs_truecase():
+    """commonfs should return true when supplied with a list of two
+    RemovalCandidates, each with the same fsid."""
+    f1 = tempfile.mkstemp()
+    f2 = tempfile.mkstemp()
+    rc1 = r.RemovalCandidate(f1[1])
+    rc2 = r.RemovalCandidate(f2[1])
+    assert r.commonfs([rc1,rc2])
