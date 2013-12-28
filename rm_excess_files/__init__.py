@@ -86,7 +86,7 @@ def main(args):
     """
     matches = matchedfiles(args.glob)
     if len(matches) < 1:
-        sys.stderr.write('No matches found.')
+        sys.stderr.write("No matches found.\n")
         sys.exit(1)
     c = candidates(matches)
     if not commonfs(c):
