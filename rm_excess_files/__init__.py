@@ -28,8 +28,12 @@ class RemovalCandidate(object):
     def __init__(self, path):
         self.path = path
         self.stat = os.stat(self.path)
+        self.statvfs = os.statvfs(self.path)
         self.mtime = self.stat.st_mtime
         self.size = self.stat.st_size
+        self.fsid = self.stat.st_dev  # device
+        #available bytes  = blocksize * avail bytes
+        self.availbytes = self.statvfs.f_bsize * self.statvfs.f_bavail
 
 
 def candidates(list_paths):
