@@ -44,6 +44,18 @@ def candidates(list_paths):
     out.sort(key=lambda x: x.mtime)
     return out
 
+#no test for this one yet
+def commonfs(candidates):
+    """given a list of RemovalCandidate(s), return True if each Candidate
+    comes from the same filesystem.
+    """
+    firstfsid = candidates[0].fsid
+    out = True
+    for i in candidates:
+        if i.fsid != firstfsid:
+            out = False
+    return out
+
 
 def matchedfiles(g):
     """given a glob (g), return the matched files."""
@@ -57,6 +69,24 @@ def main(args):
     if len(matches) < 1:
         sys.stderr.write('No matches found.')
         sys.exit(1)
+    c = candidates(matches)
+    if not commonfs(c):
+        sys.stderr.write("Removal candidates do not all come from the same")
+        sys.stderr.write(" file system. Aborting.")
+        sys.exit(1)
+    requiredbytes = c[:-1].size * ( 1 + args.buffer )
+    removalrequired = False
+    if requiredbytes > c[:-1].availbytes:
+        removalrequired = True
+    if removalrequired:
+        print ("Removal is required.")
+        print ("Removal candidate  is ", c[:-1].path)
+    if args.dryrun:
+        print ("This is a dry run, not removing files.")
+    else:
+        os.remove(c[:-1].path)
+
+
 
 
 if __name__ == "__main__":
@@ -73,6 +103,7 @@ if __name__ == "__main__":
                         )
     parser.add_argument("--preserve", default=1, type=int,
             help="The number of files to preserve.")
+    parser.add_argument("--buffer", default=0, type=float,)
     parser.add_argument("--dryrun", action='store_true')
     args = parser.parse_args()
     main(args)
