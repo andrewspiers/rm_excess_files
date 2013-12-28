@@ -42,6 +42,11 @@ def test_glob_matching():
     assert_equal(r.matchedfiles(testglob)[0],testfile)
     shutil.rmtree(d)
 
+def test_main_dryrun():
+    """passing dryrun arg to main function."""
+    parser = r.buildparser()
+    args = parser.parse_args(['--dryrun'])
+
 
 def test_RemovalCandidate_instantiation():
     """just test the creation of a RemovalCandidate ojbect"""
