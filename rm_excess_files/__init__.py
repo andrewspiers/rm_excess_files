@@ -85,6 +85,7 @@ def main(args):
     """given an argparse.Namespace (compulsory), process the arguments  within.
     """
     matches = matchedfiles(args.glob)
+    sys.stderr.write("using glob ",args.glob)
     if len(matches) < 1:
         sys.stderr.write("No matches found.\n")
         sys.exit(1)
