@@ -62,6 +62,25 @@ def matchedfiles(g):
     return glob.glob(g)
 
 
+def buildparser():
+    """build an ArgumentParser object with all the arguments and return it."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--glob",
+            help="file glob to match. This should include the whole path"
+            "with wildcards as wanted. For example:"
+            "\n\t --glob=/backup/backup*.tar.gz.gpg"
+            "\n Defaults to current working directory +"
+            " 'backup*.tar.gz.gpg'. Take care to protect wildcards from shell"
+            " expansion.",
+            default=os.path.join(os.getcwd(), "backup*.tar.gz.gpg")
+                        )
+    parser.add_argument("--preserve", default=1, type=int,
+            help="The number of files to preserve.")
+    parser.add_argument("--buffer", default=0, type=float,)
+    parser.add_argument("--dryrun", action='store_true')
+    return parser
+
 def main(args):
     """given an argparse.Namespace (compulsory), process the arguments  within.
     """
@@ -90,20 +109,6 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--glob",
-            help="file glob to match. This should include the whole path"
-            "with wildcards as wanted. For example:"
-            "\n\t --glob=/backup/backup*.tar.gz.gpg"
-            "\n Defaults to current working directory +"
-            " 'backup*.tar.gz.gpg'. Take care to protect wildcards from shell"
-            " expansion.",
-            default=os.path.join(os.getcwd(), "backup*.tar.gz.gpg")
-                        )
-    parser.add_argument("--preserve", default=1, type=int,
-            help="The number of files to preserve.")
-    parser.add_argument("--buffer", default=0, type=float,)
-    parser.add_argument("--dryrun", action='store_true')
+    parser = buildparser()
     args = parser.parse_args()
     main(args)
