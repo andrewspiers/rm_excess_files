@@ -14,9 +14,9 @@ files, but will tell you what it would have deleted.
 """
 
 import argparse
-import fnmatch
 import glob
 import os
+import sys
 
 
 class RemovalCandidate(object):
