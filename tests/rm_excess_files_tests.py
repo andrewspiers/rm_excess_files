@@ -28,7 +28,7 @@ def test_candidates_3files():
         assert_is_instance(i,r.RemovalCandidate)
         assert_greater_equal(i.mtime,young)
         young = i.mtime
-    map(os.remove,paths) ##remove the test files
+    map(os.remove,paths)  #remove the test files
 
 
 def test_glob_matching():
