@@ -42,10 +42,26 @@ def test_glob_matching():
     assert_equal(r.matchedfiles(testglob)[0],testfile)
     shutil.rmtree(d)
 
+@raises(SystemExit)
 def test_main_dryrun():
     """passing dryrun arg to main function."""
     parser = r.buildparser()
     args = parser.parse_args(['--dryrun'])
+    r.main(args)
+
+@raises(SystemExit)
+def test_main_noargs():
+    """calling main, passing no arguments."""
+    startdir = os.getcwd()
+    d = tempfile.mkdtemp()
+    os.chdir(d)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--glob',
+            default=os.path.join(os.getcwd(),"backup*.gz.gpg"))
+    args=parser.parse_args()
+    r.main(args)
+    os.chdir(startdir)
+
 
 
 def test_RemovalCandidate_instantiation():
