@@ -15,6 +15,7 @@ files, but will tell you what it would have deleted.
 
 import argparse
 import glob
+import logging
 import os
 import sys
 
@@ -86,6 +87,7 @@ def main(args):
     """
     matches = matchedfiles(args.glob)
     sys.stderr.write("using glob " + args.glob + "\n")
+    logger.info("using glob " + args.glob + "\n")
     if len(matches) < 1:
         sys.stderr.write("No matches found.\n")
         sys.exit(1)
@@ -107,7 +109,9 @@ def main(args):
         os.remove(c[-1].path)
 
 
-
+# Always want to start logging, whether we are __main__ or not.
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     parser = buildparser()
