@@ -61,7 +61,7 @@ def test_main_noargs():
     args=parser.parse_args()
     r.main(args)
     os.chdir(startdir)
-
+    shutil.rmtree(d)
 
 
 def test_RemovalCandidate_instantiation():
