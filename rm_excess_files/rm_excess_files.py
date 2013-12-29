@@ -94,9 +94,9 @@ def main(args):
         sys.stderr.write("Removal candidates do not all come from the same")
         sys.stderr.write(" file system. Aborting.")
         sys.exit(1)
-    requiredbytes = c[:-1].size * ( 1 + args.buffer )
+    requiredbytes = c[-1].size * ( 1 + args.buffer )
     removalrequired = False
-    if requiredbytes > c[:-1].availbytes:
+    if requiredbytes > c[-1].availbytes:
         removalrequired = True
     if removalrequired:
         print ("Removal is required.")
@@ -104,7 +104,7 @@ def main(args):
     if args.dryrun:
         print ("This is a dry run, not removing files.")
     else:
-        os.remove(c[:-1].path)
+        os.remove(c[-1].path)
 
 
 
