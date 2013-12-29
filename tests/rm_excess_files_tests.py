@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import time
 
-import rm_excess_files as r
+import rm_excess_files.rm_excess_files as r
 
 dir(r)
 
